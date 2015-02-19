@@ -96,10 +96,14 @@ public class GenerateBuildings
 		createFoundation(Xmins[X][Z], Zmins[X][Z], Xmaxs[X][Z], Zmaxs[X][Z]);
 		for(int k = 0; k < skylineXZ[X][Z]; k++)
 		{
+			int Xconnector = isXconnected(X, Z, k + 1);
+			int Zconnector = isZconnected(X, Z, k + 1);
+			
 			int northWallStyle = randomFromHeight(k);
-			int southWallStyle = randomFromHeight(k);
-			int eastWallStyle = randomFromHeight(k);
-			int westWallStyle = randomFromHeight(k);
+			int southWallStyle =  randomFromHeight(k);
+			int eastWallStyle =  randomFromHeight(k);
+			int westWallStyle =  randomFromHeight(k);
+			
 			createFloor(Xmins[X][Z], Zmins[X][Z], Xmaxs[X][Z], Zmaxs[X][Z], baseY + 3 +(k * 4));
 			createEdges(Xmins[X][Z], Zmins[X][Z], Xmaxs[X][Z], Zmaxs[X][Z], baseY + (k * 4));
 			
@@ -123,12 +127,35 @@ public class GenerateBuildings
 				}
 			}
 			
-			createNorthWall(Xmins[X][Z], Zmaxs[X][Z], Xmaxs[X][Z], Zmaxs[X][Z], baseY + (k * 4), northWallStyle);
-			createSouthWall(Xmins[X][Z], Zmins[X][Z], Xmaxs[X][Z], Zmins[X][Z], baseY + (k * 4), southWallStyle);
-			createEastWall(Xmaxs[X][Z], Zmins[X][Z], Xmaxs[X][Z], Zmaxs[X][Z], baseY + (k * 4), eastWallStyle);
-			createWestWall(Xmins[X][Z], Zmins[X][Z], Xmins[X][Z], Zmaxs[X][Z], baseY + (k * 4), westWallStyle);
+			switch (Xconnector) {
+			case -1:
+						if(k == 0) createFoundation(Xmins[X][Z] - 1, Zmins[X][Z], Xmins[X][Z] - 1, Zmaxs[X][Z]);
+						createConnection(Xmins[X][Z] - 1, Zmins[X][Z], Xmins[X][Z] - 1, Zmaxs[X][Z], baseY + (k * 4));
+						createEastWall(Xmaxs[X][Z], Zmins[X][Z], Xmaxs[X][Z], Zmaxs[X][Z], baseY + (k * 4), eastWallStyle);
+						break;
+			case  0:	createEastWall(Xmaxs[X][Z], Zmins[X][Z], Xmaxs[X][Z], Zmaxs[X][Z], baseY + (k * 4), eastWallStyle);
+						createWestWall(Xmins[X][Z], Zmins[X][Z], Xmins[X][Z], Zmaxs[X][Z], baseY + (k * 4), westWallStyle);
+						break;
+			case  1:	if(k == 0) createFoundation(Xmaxs[X][Z] + 1, Zmins[X][Z], Xmaxs[X][Z] + 1, Zmaxs[X][Z]);
+						createConnection(Xmaxs[X][Z] + 1, Zmins[X][Z], Xmaxs[X][Z] + 1, Zmaxs[X][Z], baseY + (k * 4));
+						createWestWall(Xmins[X][Z], Zmins[X][Z], Xmins[X][Z], Zmaxs[X][Z], baseY + (k * 4), westWallStyle);
+						break;
+			}
+			
+			switch (Zconnector) {
+			case -1:	if(k == 0) createFoundation(Xmins[X][Z], Zmins[X][Z] - 1, Xmaxs[X][Z], Zmins[X][Z] - 1);
+						createConnection(Xmins[X][Z], Zmins[X][Z] - 1, Xmaxs[X][Z], Zmins[X][Z] - 1, baseY + (k * 4));
+						createNorthWall(Xmins[X][Z], Zmaxs[X][Z], Xmaxs[X][Z], Zmaxs[X][Z], baseY + (k * 4), northWallStyle);
+						break;
+			case 0:		createNorthWall(Xmins[X][Z], Zmaxs[X][Z], Xmaxs[X][Z], Zmaxs[X][Z], baseY + (k * 4), northWallStyle);
+						createSouthWall(Xmins[X][Z], Zmins[X][Z], Xmaxs[X][Z], Zmins[X][Z], baseY + (k * 4), southWallStyle);
+						break;
+			case 1:		if(k == 0) createFoundation(Xmins[X][Z], Zmaxs[X][Z] + 1, Xmaxs[X][Z], Zmaxs[X][Z] + 1);
+						createConnection(Xmins[X][Z], Zmaxs[X][Z] + 1, Xmaxs[X][Z], Zmaxs[X][Z] + 1, baseY + (k * 4));
+						createSouthWall(Xmins[X][Z], Zmins[X][Z], Xmaxs[X][Z], Zmins[X][Z], baseY + (k * 4), southWallStyle);
+						break;
+			}
 		}
-		
 	}
 
 	private void createStairsS(int xstart, int zstart, int xend, int zend, int y)
@@ -840,6 +867,37 @@ public class GenerateBuildings
 		}
 		}
 	
+	private void createConnection(int xstart, int zstart, int xend, int zend, int y)
+	{
+		if(xstart == xend){
+			currentWorld.setBlock(xstart, y, zstart, materials.wall);
+			currentWorld.setBlock(xstart, y + 1, zstart, materials.wall);
+			currentWorld.setBlock(xstart, y + 2, zstart, materials.wall);
+			
+			currentWorld.setBlock(xstart, y, zend, materials.wall);
+			currentWorld.setBlock(xstart, y + 1, zend, materials.wall);
+			currentWorld.setBlock(xstart, y + 2, zend, materials.wall);
+		} else {
+			currentWorld.setBlock(xstart, y, zstart, materials.wall);
+			currentWorld.setBlock(xstart, y + 1, zstart, materials.wall);
+			currentWorld.setBlock(xstart, y + 2, zstart, materials.wall);
+			
+			currentWorld.setBlock(xend, y, zstart, materials.wall);
+			currentWorld.setBlock(xend, y + 1, zstart, materials.wall);
+			currentWorld.setBlock(xend, y + 2, zstart, materials.wall);
+		}
+		
+		
+		for(int m = xstart ; m <= xend; m++)
+		{
+			for(int n = zstart; n <= zend; n++)
+			{
+				currentWorld.setBlock(m, y + 3, n, materials.floor);
+			}
+			
+		}
+	}
+	
 
 	private int getCenter(int min, int max)
 	{
@@ -850,7 +908,27 @@ public class GenerateBuildings
 	private int randomFromHeight(int buildingFloor)
 	{
 		if(buildingFloor == 0) return ran.nextInt(8) + 1;
-		else return ran.nextInt(4) + 8;
+		else return ran.nextInt(6) + 9;
+	}
+	
+	private int isZconnected(int x,int z, int k)
+	{
+		if(z == 0) {
+			if(skylineXZ[x][1] >= k) return 1;
+		} else if(z == 1) {
+			if(skylineXZ[x][0] >= k) return -1;
+		}
+		return 0;
+	}
+
+	private int isXconnected(int x, int z, int k)
+	{
+		if(x == 0) {
+			if(skylineXZ[1][z] >= k) return 1;
+		} else if(x == 1) {
+			if(skylineXZ[0][z] >= k) return -1;
+		}
+		return 0;
 	}
 	
 }
