@@ -1,8 +1,6 @@
 package dyrewulf.citybiome;
 
-import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeDictionary.Type;
@@ -12,8 +10,8 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.LanguageRegistry;
 import dyrewulf.citybiome.blocks.CityBlock;
+import dyrewulf.citybiome.citymap.CityMap;
 import dyrewulf.citybiome.help.Reference;
 import dyrewulf.citybiome.world.DyreCityWorldType;
 
@@ -21,7 +19,9 @@ import dyrewulf.citybiome.world.DyreCityWorldType;
 public class DyrewulfCity
 {	
 	public static BiomeGenBase basicCity;
-	public static DyreCityWorldGenerator worldGen = new DyreCityWorldGenerator();
+	public static DyreCityWorldGenerator worldGen = new DyreCityWorldGenerator().setMaxHeight(4).setChance(6).setBuildingMaterials(BiomeDyrewulfCity.buildingStyles);
+	public static CityMap cityMap = new CityMap();
+	
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
@@ -37,7 +37,8 @@ public class DyrewulfCity
 		GameRegistry.registerBlock(CityBlock.redwoodTile, "redwoodtile");
 		GameRegistry.registerBlock(CityBlock.tilefloor, "tilefloor");
 		GameRegistry.registerBlock(CityBlock.woodTile, "woodtile");
-		
+		GameRegistry.registerBlock(CityBlock.asphalt, "asphalt");
+		GameRegistry.registerBlock(CityBlock.weedytiles, "weedytiles");
 		
 	}
 	
@@ -50,7 +51,7 @@ public class DyrewulfCity
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event)
 	{
-		basicCity = new BiomeDyrewulfCity(Reference.BIOMEID, Blocks.gravel, Blocks.stone).setBuildingHeight(4).setBiomeName("Basic City").setTemperatureRainfall(1.0F, 0.5F);
+		basicCity = new BiomeDyrewulfCity(Reference.BIOMEID, Blocks.grass, Blocks.stone).setBiomeName("Basic City").setTemperatureRainfall(1.0F, 0.5F);
 		BiomeDictionary.registerBiomeType(basicCity, Type.SPARSE, Type.PLAINS);
 		BiomeDictionary.registerAllBiomes();
 		DyreCityWorldType.addCustomWorldTypes();

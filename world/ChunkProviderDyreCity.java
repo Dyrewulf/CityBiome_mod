@@ -17,6 +17,7 @@ import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.MapGenBase;
+import net.minecraft.world.gen.MapGenCaves;
 import net.minecraft.world.gen.MapGenRavine;
 import net.minecraft.world.gen.NoiseGenerator;
 import net.minecraft.world.gen.NoiseGeneratorOctaves;
@@ -31,6 +32,7 @@ import net.minecraftforge.event.terraingen.PopulateChunkEvent;
 import net.minecraftforge.event.terraingen.TerrainGen;
 import cpw.mods.fml.common.eventhandler.Event.Result;
 import dyrewulf.citybiome.world.gen.EmptyMapGenBase;
+import dyrewulf.macabre.Macabre;
 
 
 public class ChunkProviderDyreCity implements IChunkProvider {
@@ -61,12 +63,12 @@ public class ChunkProviderDyreCity implements IChunkProvider {
 	private final double[] noiseArray;
 	private final float[] parabolicField;
 	private double[] stoneNoise = new double[256];
-	private MapGenBase caveGenerator = new EmptyMapGenBase();
+	private MapGenBase caveGenerator = new MapGenCaves();
 
 	private MapGenScatteredFeature scatteredFeatureGenerator = new MapGenScatteredFeature();
 
 	/** Holds ravine generator */
-	private MapGenBase ravineGenerator = new EmptyMapGenBase();
+	private MapGenBase ravineGenerator = new MapGenRavine();
 
 	/** The biomes that are used to generate the chunk */
 	private BiomeGenBase[] biomesForGeneration;
@@ -90,13 +92,13 @@ public class ChunkProviderDyreCity implements IChunkProvider {
 		this.mapFeaturesEnabled = mapFeaturesEnabled;
 		this.worldType = world.getWorldInfo().getTerrainType();
 		this.rand = new Random(seed);
-		this.noiseGen1 = new NoiseGeneratorOctaves(this.rand, 0);
-		this.noiseGen2 = new NoiseGeneratorOctaves(this.rand, 0);
-		this.noiseGen3 = new NoiseGeneratorOctaves(this.rand, 0);
-		this.noisePerl = new NoiseGeneratorPerlin(this.rand, 0);
-		this.noiseGen5 = new NoiseGeneratorOctaves(this.rand, 0);
-		this.noiseGen6 = new NoiseGeneratorOctaves(this.rand, 0);
-		this.mobSpawnerNoise = new NoiseGeneratorOctaves(this.rand, 0);
+		this.noiseGen1 = new NoiseGeneratorOctaves(this.rand, 16);
+		this.noiseGen2 = new NoiseGeneratorOctaves(this.rand, 16);
+		this.noiseGen3 = new NoiseGeneratorOctaves(this.rand, 8);
+		this.noisePerl = new NoiseGeneratorPerlin(this.rand, 4);
+		this.noiseGen5 = new NoiseGeneratorOctaves(this.rand, 10);
+		this.noiseGen6 = new NoiseGeneratorOctaves(this.rand, 16);
+		this.mobSpawnerNoise = new NoiseGeneratorOctaves(this.rand, 8);
 		this.noiseArray = new double[825];
 		this.parabolicField = new float[25];
 		for (int j = -2; j <= 2; ++j) {
@@ -126,7 +128,7 @@ public class ChunkProviderDyreCity implements IChunkProvider {
 		//DONT EDIT THS METHOD UNLES YOU KNOW WHAT UR DOING OR MAKE A COPY INCASE U MESS IT UP....
 		//YOU HAVE BE WARNED !!!!!
 
-		byte b0 = 63;
+		byte b0 = 0;
 		this.biomesForGeneration = this.worldObj.getWorldChunkManager().getBiomesForGeneration(this.biomesForGeneration, par1 * 4 - 2, par2 * 4 - 2, 10, 10);
 		this.func_147423_a(par1 * 4, 0, par2 * 4);
 		for (int k = 0; k < 4; ++k) {
@@ -217,8 +219,8 @@ public class ChunkProviderDyreCity implements IChunkProvider {
 		this.func_147424_a(par1, par2, ablock);
 		this.biomesForGeneration = this.worldObj.getWorldChunkManager().loadBlockGeneratorData(this.biomesForGeneration, par1 * 16, par2 * 16, 16, 16);
 		this.replaceBlocksForBiome(par1, par2, ablock, abyte, this.biomesForGeneration);
-//		this.caveGenerator.func_151539_a(this, this.worldObj, par1, par2, ablock);
-//		this.ravineGenerator.func_151539_a(this, this.worldObj, par1, par2, ablock);
+		this.caveGenerator.func_151539_a(this, this.worldObj, par1, par2, ablock);
+		this.ravineGenerator.func_151539_a(this, this.worldObj, par1, par2, ablock);
 		if (this.mapFeaturesEnabled) {
 			this.scatteredFeatureGenerator.func_151539_a(this, this.worldObj, par1, par2, ablock);
 		}
@@ -352,9 +354,7 @@ public class ChunkProviderDyreCity implements IChunkProvider {
 		int l1;
 		int i2;
 
-		
-		
-/*		//Add Lakes ??
+		//Add Lakes ??
 		if (biomegenbase != BiomeGenBase.desert && biomegenbase != BiomeGenBase.desertHills && !flag && this.rand.nextInt(4) == 0
 				&& TerrainGen.populate(par1IChunkProvider, worldObj, rand, par2, par3, flag, PopulateChunkEvent.Populate.EventType.LAKE)) {
 			k1 = k + this.rand.nextInt(16) + 8;
@@ -362,9 +362,7 @@ public class ChunkProviderDyreCity implements IChunkProvider {
 			i2 = l + this.rand.nextInt(16) + 8;
 			(new WorldGenLakes(Blocks.water)).generate(this.worldObj, this.rand, k1, l1, i2);
 		}
-*/
-/*		
-		
+
 		//Add Lakes ??
 		if (TerrainGen.populate(par1IChunkProvider, worldObj, rand, par2, par3, flag, PopulateChunkEvent.Populate.EventType.LAVA) && !flag && this.rand.nextInt(8) == 0) {
 			k1 = k + this.rand.nextInt(16) + 8;
@@ -376,7 +374,6 @@ public class ChunkProviderDyreCity implements IChunkProvider {
 			}
 		}
 
-*/
 		//Add Dungeons ??
 		boolean doGen = TerrainGen.populate(par1IChunkProvider, worldObj, rand, par2, par3, flag, PopulateChunkEvent.Populate.EventType.DUNGEON);
 		for (k1 = 0; doGen && k1 < 8; ++k1) {
@@ -412,7 +409,6 @@ public class ChunkProviderDyreCity implements IChunkProvider {
 		MinecraftForge.EVENT_BUS.post(new PopulateChunkEvent.Post(par1IChunkProvider, worldObj, rand, par2, par3, flag));
 		BlockFalling.fallInstantly = false;
 	}
-
 
 	/**
 	 * Two modes of operation: if passed true, save all Chunks in one go.  If passed false, save up to two chunks.

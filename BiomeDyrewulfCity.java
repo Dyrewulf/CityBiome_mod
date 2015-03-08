@@ -8,8 +8,6 @@ import net.minecraft.world.biome.BiomeGenBase;
 
 public class BiomeDyrewulfCity extends BiomeGenBase
 {
-	public static int MxBldgHt = 5;
-	public static int chanceInTen = 6;
 	public static ArrayList<BuildingMaterials> buildingStyles = new ArrayList<BuildingMaterials>();
 	
 	public BiomeDyrewulfCity(int id, Block top, Block filler)
@@ -42,27 +40,4 @@ public class BiomeDyrewulfCity extends BiomeGenBase
 		buildingStyles.add(BuildingMaterials.whitewashed);
 		
 		}
-	 
-	public BiomeGenBase setBuildingHeight(int height)
-	{
-		this.MxBldgHt = height;
-		return this;
-	}
-	
-	public int getBuildingHt()
-	{
-		return(MxBldgHt);
-	}
-	
-	public BiomeGenBase setChanceInTen(int chance)
-	{
-		this.chanceInTen = chance;
-		return this;
-	}
-	
-	public int getChanceInTen()
-	{
-		return(chanceInTen);
-	}
-	
 }

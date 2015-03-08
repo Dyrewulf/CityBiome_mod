@@ -14,6 +14,8 @@ public class BuildingMaterials
 	public Block door = Blocks.wooden_door;
 	public Block light = Blocks.glowstone;
 	public Block wall = Blocks.stonebrick;
+	public Block sidewalk = Blocks.stonebrick;
+	public Block street = CityBlock.asphalt;
 	
 	public static final BuildingMaterials skyscraper = new BuildingMaterials().setCorner(CityBlock.brushedsteel).setWall(CityBlock.brushedsteel);
 	public static final BuildingMaterials artdeco = new BuildingMaterials().setFoundation(CityBlock.tilefloor).setCorner(CityBlock.wiltern).setFloor(CityBlock.tilefloor).setWall(CityBlock.wiltern);
@@ -80,6 +82,18 @@ public class BuildingMaterials
 	public BuildingMaterials setWall(Block block)
 	{
 		wall = block;
+		return this;
+	}
+	
+	public BuildingMaterials setSidewalk(Block block)
+	{
+		sidewalk = block;
+		return this;
+	}
+	
+	public BuildingMaterials setStreet(Block block)
+	{
+		street = block;
 		return this;
 	}
 }

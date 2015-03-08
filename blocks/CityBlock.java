@@ -32,6 +32,9 @@ public class CityBlock extends Block
 	public static final Block fadedwoodTile = new CityBlock().setBlockName("fadedwoodtile").setBlockTextureName(Reference.MODID + ":" + "fadedwoodtile").setCreativeTab(CreativeTabs.tabBlock);
 	public static final Block tilefloor = new CityBlock().setBlockName("tilefloor").setBlockTextureName(Reference.MODID + ":" + "tilefloor").setCreativeTab(CreativeTabs.tabBlock);
 	
+	public static final Block asphalt = new CityBlock().setBlockName("asphalt").setBlockTextureName(Reference.MODID + ":" + "asphalt").setCreativeTab(CreativeTabs.tabBlock);
+	public static final Block weedytiles = new CityBlock().setBlockName("weedytiles").setBlockTextureName(Reference.MODID + ":" + "asphalt").setCreativeTab(CreativeTabs.tabBlock);
+	
 	protected CityBlock()
 	{
 		super(Material.rock);
